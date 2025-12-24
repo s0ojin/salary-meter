@@ -4,14 +4,16 @@ export interface SalaryState {
   amount: number;
   type: 'yearly' | 'monthly';
   isPreTax: boolean;
-  workHoursPerMonth: number; // Default 209
+  hoursPerDay: number; // 일 근로시간 (기본: 8시간)
+  workDaysPerMonth: number; // 월 근로일수 (기본: 22일)
 }
 
 const DEFAULT_SALARY_STATE: SalaryState = {
   amount: 0,
   type: 'yearly',
-  isPreTax: true, // Simplified for MVP, assuming pre-tax input but we might want to add a simple tax estimator later
-  workHoursPerMonth: 209,
+  isPreTax: true,
+  hoursPerDay: 8,
+  workDaysPerMonth: 22,
 };
 
 export const useSalary = () => {
@@ -30,11 +32,9 @@ export const useSalary = () => {
       monthlyAmount = salaryState.amount / 12;
     }
 
-    // Simple tax estimation could go here, for now using raw amount or simple 10% deduction if "post-tax" was selected but logic isn't fully specced yet.
-    // User asked for "Pre/Post tax selection", let's assume the user inputs the *Net* amount if they select Post-tax, or we implement a simple calculator.
-    // For MVP, let's trust the user's input as the "base" for calculation.
-
-    const hourlyRate = monthlyAmount / salaryState.workHoursPerMonth;
+    // 월 근무시간 = 일 근로시간 × 월 근로일수
+    const workHoursPerMonth = salaryState.hoursPerDay * salaryState.workDaysPerMonth;
+    const hourlyRate = monthlyAmount / workHoursPerMonth;
     const secondRate = hourlyRate / 3600;
 
     return secondRate;

@@ -1,26 +1,29 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-bg-primary: #0a0a0a;
-  --color-bg-secondary: #1a1a1a;
-  --color-bg-tertiary: #2a2a2a;
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8fafc;
+  --color-bg-tertiary: #f1f5f9;
 
-  --color-text-primary: #ffffff;
-  --color-text-secondary: #a0a0a0;
-  --color-text-accent: #ffd700;
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #64748b;
+  --color-text-accent: #6366F1;
 
-  --color-accent-primary: #ffd700;
-  --color-accent-secondary: #00ff9d;
-  --color-accent-danger: #ff4d4d;
+  --color-accent-primary: #6366F1;
+  --color-accent-secondary: #818CF8;
+  --color-accent-danger: #ef4444;
 
-  --font-sans: Inter, system-ui, sans-serif;
+  --font-pretendard: 'Pretendard', sans-serif;
   --font-mono: 'Roboto Mono', monospace;
 
-  --shadow-glow: 0 0 10px rgba(255, 215, 0, 0.3);
-  --shadow-glow-green: 0 0 20px rgba(0, 255, 157, 0.3);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.25);
+  --shadow-glow-light: 0 0 30px rgba(99, 102, 241, 0.15);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06);
 
   --animate-spin-slow: spin 2s linear infinite;
   --animate-fade-in: fadeIn 0.5s ease-out;
+  --animate-pulse-soft: pulseSoft 2s ease-in-out infinite;
+  --animate-merge-up: mergeUp 2s ease-out forwards;
 
   @keyframes fadeIn {
     0% {
@@ -32,18 +35,44 @@
       transform: translateY(0);
     }
   }
+
+  @keyframes pulseSoft {
+    0%, 100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.7;
+    }
+  }
+
+  @keyframes mergeUp {
+    0% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0) scale(1);
+    }
+    50% {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-20px) scale(1.2);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-40px) scale(0.8);
+    }
+  }
 }
 
 :root {
-  font-family: var(--font-sans);
+  font-family: var(--font-pretendard);
   background-color: var(--color-bg-primary);
   color: var(--color-text-primary);
 }
 
 @utility text-shadow-glow {
-  text-shadow: 0 0 20px rgba(0, 255, 157, 0.3);
+  text-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
 }
 
-@utility text-shadow-gold {
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+@utility text-shadow-soft {
+  text-shadow: 0 0 10px rgba(99, 102, 241, 0.2);
 }
+
+/* Mono 폰트는 이미 고정폭 */

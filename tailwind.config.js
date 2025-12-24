@@ -5,28 +5,29 @@ export default {
     extend: {
       colors: {
         bg: {
-          primary: '#0a0a0a',
-          secondary: '#1a1a1a',
-          tertiary: '#2a2a2a',
+          primary: '#ffffff',
+          secondary: '#f8fafc',
+          tertiary: '#f1f5f9',
         },
         text: {
-          primary: '#ffffff',
-          secondary: '#a0a0a0',
-          accent: '#ffd700',
+          primary: '#1e293b',
+          secondary: '#64748b',
+          accent: '#6366F1',
         },
         accent: {
-          primary: '#ffd700', // Gold
-          secondary: '#00ff9d', // Neon Green
-          danger: '#ff4d4d',
+          primary: '#6366F1', // Indigo Purple
+          secondary: '#818CF8', // Light Indigo
+          danger: '#ef4444',
         },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Pretendard', 'system-ui', 'sans-serif'],
         mono: ['Roboto Mono', 'monospace'],
       },
       boxShadow: {
-        glow: '0 0 10px rgba(255, 215, 0, 0.3)',
-        'glow-green': '0 0 20px rgba(0, 255, 157, 0.3)',
+        glow: '0 0 20px rgba(99, 102, 241, 0.25)',
+        'glow-light': '0 0 30px rgba(99, 102, 241, 0.15)',
+        'card': '0 4px 24px rgba(0, 0, 0, 0.06)',
       },
       animation: {
         'spin-slow': 'spin 2s linear infinite',
