@@ -15,7 +15,7 @@ type Screen = 'main' | 'pomodoro' | 'calendar';
 
 function App() {
   const { salaryState, setSalaryState, sps } = useSalary();
-  const { isWorking, totalWorkSeconds, clockIn, clockOut } = useWork();
+  const { isWorking, totalWorkSeconds, todayWorkSeconds, workStartTime, clockIn, clockOut } = useWork();
   const { 
     timeLeft: pomodoroTimeLeft, 
     isActive: isPomodoroActive, 
@@ -28,7 +28,7 @@ function App() {
     clearSessionEarned: clearPomodoroSession,
   } = usePomodoro(25, sps);
   const { isLupinMode, lupinEarned, lupinSeconds, toggleLupin } = useLupin(sps);
-  const { earned, setEarned } = useMoneyAccumulator(sps, isWorking);
+  const { earned, setEarned } = useMoneyAccumulator(sps, isWorking, workStartTime, todayWorkSeconds);
   const { records, saveRecord, getMonthTotal } = useDailyRecord();
 
   const [currentScreen, setCurrentScreen] = useState<Screen>('main');

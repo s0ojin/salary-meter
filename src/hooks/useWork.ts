@@ -80,6 +80,8 @@ export const useWork = () => {
   return {
     isWorking: workState.isWorking,
     totalWorkSeconds,
+    todayWorkSeconds: workState.todayWorkSeconds,
+    workStartTime: workState.workStartTime,
     clockIn,
     clockOut,
   };

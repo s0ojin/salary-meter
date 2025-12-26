@@ -1,6 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
-export const useMoneyAccumulator = (sps: number, isWorking: boolean) => {
+export const useMoneyAccumulator = (
+  sps: number, 
+  isWorking: boolean, 
+  workStartTime: number | null,
+  todayWorkSeconds: number
+) => {
   const [earned, setEarned] = useState(() => {
     const saved = localStorage.getItem('earned_amount');
     const savedDate = localStorage.getItem('earned_date');
@@ -13,34 +18,42 @@ export const useMoneyAccumulator = (sps: number, isWorking: boolean) => {
     return saved ? parseFloat(saved) : 0;
   });
 
-  const lastTickRef = useRef<number>(Date.now());
+  // 실시간 수익 계산 (절대 시간 기반 - 모바일에서도 정확함)
+  useEffect(() => {
+    if (!isWorking || !workStartTime) {
+      // 퇴근 상태: 출근 전 수익만 계산 (todayWorkSeconds 기반)
+      const preWorkEarned = todayWorkSeconds * sps;
+      setEarned(preWorkEarned);
+      return;
+    }
 
+    const updateEarned = () => {
+      // 출근 전 수익 (이미 일한 시간에 대한 수익)
+      const preWorkEarned = todayWorkSeconds * sps;
+      
+      // 현재 세션 수익 (출근 후 경과 시간)
+      const currentSessionSeconds = (Date.now() - workStartTime) / 1000;
+      const currentSessionEarned = sps * currentSessionSeconds;
+      
+      // 총 수익
+      const totalEarned = preWorkEarned + currentSessionEarned;
+      setEarned(totalEarned);
+    };
+
+    // 즉시 한 번 계산 (새로고침 후 보정)
+    updateEarned();
+
+    // 100ms마다 업데이트 (부드러운 표시)
+    const intervalId = window.setInterval(updateEarned, 100);
+
+    return () => clearInterval(intervalId);
+  }, [sps, isWorking, workStartTime, todayWorkSeconds]);
+
+  // localStorage에 저장
   useEffect(() => {
     localStorage.setItem('earned_amount', earned.toString());
     localStorage.setItem('earned_date', new Date().toDateString());
   }, [earned]);
-
-  useEffect(() => {
-    let animationFrameId: number;
-
-    const tick = () => {
-      const now = Date.now();
-      const delta = (now - lastTickRef.current) / 1000; // seconds
-      lastTickRef.current = now;
-
-      // 출근 상태일 때만 돈이 쌓임
-      if (isWorking) {
-        setEarned((prev) => prev + sps * delta);
-      }
-
-      animationFrameId = requestAnimationFrame(tick);
-    };
-
-    lastTickRef.current = Date.now();
-    animationFrameId = requestAnimationFrame(tick);
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [sps, isWorking]);
 
   return { earned, setEarned };
 };
