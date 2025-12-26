@@ -42,9 +42,5 @@ export const useMoneyAccumulator = (sps: number, isWorking: boolean) => {
     return () => cancelAnimationFrame(animationFrameId);
   }, [sps, isWorking]);
 
-  const resetEarned = () => {
-    setEarned(0);
-  };
-
-  return { earned, setEarned, resetEarned };
+  return { earned, setEarned };
 };

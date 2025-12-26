@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 export interface SalaryState {
   amount: number;
   type: 'yearly' | 'monthly';
-  isPreTax: boolean;
   hoursPerDay: number; // 일 근로시간 (기본: 8시간)
   workDaysPerMonth: number; // 월 근로일수 (기본: 22일)
 }
@@ -11,7 +10,6 @@ export interface SalaryState {
 const DEFAULT_SALARY_STATE: SalaryState = {
   amount: 0,
   type: 'yearly',
-  isPreTax: true,
   hoursPerDay: 8,
   workDaysPerMonth: 22,
 };

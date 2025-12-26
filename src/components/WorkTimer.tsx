@@ -1,5 +1,5 @@
 import React from 'react';
-import { formatCurrencyDetailed, formatTime, formatWorkTime } from '../utils/format';
+import { formatCurrencyDetailed, formatWorkTime } from '../utils/format';
 
 interface WorkTimerProps {
   // 출근/퇴근

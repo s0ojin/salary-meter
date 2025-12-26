@@ -15,7 +15,7 @@ type Screen = 'main' | 'pomodoro' | 'calendar';
 
 function App() {
   const { salaryState, setSalaryState, sps } = useSalary();
-  const { isWorking, totalWorkSeconds, clockIn, clockOut, resetToday } = useWork();
+  const { isWorking, totalWorkSeconds, clockIn, clockOut } = useWork();
   const { 
     timeLeft: pomodoroTimeLeft, 
     isActive: isPomodoroActive, 
@@ -27,8 +27,8 @@ function App() {
     reset: resetPomodoro,
     clearSessionEarned: clearPomodoroSession,
   } = usePomodoro(25, sps);
-  const { isLupinMode, lupinEarned, lupinSeconds, toggleLupin, resetLupin } = useLupin(sps);
-  const { earned, setEarned, resetEarned } = useMoneyAccumulator(sps, isWorking);
+  const { isLupinMode, lupinEarned, lupinSeconds, toggleLupin } = useLupin(sps);
+  const { earned, setEarned } = useMoneyAccumulator(sps, isWorking);
   const { records, saveRecord, getMonthTotal } = useDailyRecord();
 
   const [currentScreen, setCurrentScreen] = useState<Screen>('main');
@@ -100,13 +100,6 @@ function App() {
     // 뽀모도로 리셋 및 메인 화면으로
     resetPomodoro();
     setCurrentScreen('main');
-  };
-
-  const handleResetAll = () => {
-    resetToday();
-    resetPomodoro();
-    resetLupin();
-    resetEarned();
   };
 
   // 퇴근하면 뽀모도로 화면에서 자동으로 나가기

@@ -36,8 +36,7 @@ export const useWork = () => {
   useEffect(() => {
     if (workState.isWorking && workState.workStartTime) {
       intervalRef.current = window.setInterval(() => {
-        const elapsed = Math.floor((Date.now() - workState.workStartTime!) / 1000);
-        setCurrentWorkSeconds(elapsed);
+        setCurrentWorkSeconds(() => Math.floor((Date.now() - workState.workStartTime!) / 1000));
       }, 1000);
     } else {
       setCurrentWorkSeconds(0);
@@ -74,26 +73,15 @@ export const useWork = () => {
     });
   }, []);
 
-  const resetToday = useCallback(() => {
-    setWorkState({
-      isWorking: false,
-      workStartTime: null,
-      todayWorkSeconds: 0,
-    });
-    localStorage.setItem('work_date', new Date().toDateString());
-  }, []);
 
   // 오늘 총 근무시간 (현재 근무 중인 시간 포함)
   const totalWorkSeconds = workState.todayWorkSeconds + currentWorkSeconds;
 
   return {
     isWorking: workState.isWorking,
-    currentWorkSeconds,
-    todayWorkSeconds: workState.todayWorkSeconds,
     totalWorkSeconds,
     clockIn,
     clockOut,
-    resetToday,
   };
 };
 

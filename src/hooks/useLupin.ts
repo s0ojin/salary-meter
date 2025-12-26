@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 export const useLupin = (sps: number) => {
   const [isLupinMode, setIsLupinMode] = useState(false);
-  const [lupinStartTime, setLupinStartTime] = useState<number | null>(null);
   // 날짜 체크를 먼저 수행
   const isNewDay = (() => {
     const savedDate = localStorage.getItem('lupin_date');
@@ -61,21 +60,7 @@ export const useLupin = (sps: number) => {
   }, [sps, isLupinMode]);
 
   const toggleLupin = useCallback(() => {
-    setIsLupinMode((prev) => {
-      if (!prev) {
-        setLupinStartTime(Date.now());
-      } else {
-        setLupinStartTime(null);
-      }
-      return !prev;
-    });
-  }, []);
-
-  const resetLupin = useCallback(() => {
-    setIsLupinMode(false);
-    setLupinStartTime(null);
-    setLupinEarned(0);
-    setLupinSeconds(0);
+    setIsLupinMode((prev) => !prev);
   }, []);
 
   return {
@@ -83,7 +68,6 @@ export const useLupin = (sps: number) => {
     lupinEarned,
     lupinSeconds: Math.floor(lupinSeconds),
     toggleLupin,
-    resetLupin,
   };
 };
 
