@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 export const useLupin = (sps: number) => {
-  const [isLupinMode, setIsLupinMode] = useState(false);
   // 날짜 체크를 먼저 수행
   const isNewDay = (() => {
     const savedDate = localStorage.getItem('lupin_date');
@@ -10,10 +9,17 @@ export const useLupin = (sps: number) => {
       localStorage.setItem('lupin_date', today);
       localStorage.setItem('lupin_earned', '0');
       localStorage.setItem('lupin_seconds', '0');
+      localStorage.setItem('lupin_mode', 'false');
       return true;
     }
     return false;
   })();
+
+  const [isLupinMode, setIsLupinMode] = useState(() => {
+    if (isNewDay) return false;
+    const saved = localStorage.getItem('lupin_mode');
+    return saved === 'true';
+  });
 
   const [lupinEarned, setLupinEarned] = useState(() => {
     if (isNewDay) return 0;
@@ -34,7 +40,8 @@ export const useLupin = (sps: number) => {
     localStorage.setItem('lupin_earned', lupinEarned.toString());
     localStorage.setItem('lupin_seconds', lupinSeconds.toString());
     localStorage.setItem('lupin_date', new Date().toDateString());
-  }, [lupinEarned, lupinSeconds]);
+    localStorage.setItem('lupin_mode', isLupinMode.toString());
+  }, [lupinEarned, lupinSeconds, isLupinMode]);
 
   // 루팡 모드일 때 돈 적립
   useEffect(() => {
