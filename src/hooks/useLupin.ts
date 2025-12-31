@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-export const useLupin = (sps: number) => {
+export const useLupin = (sps: number, isWorking: boolean) => {
   // 날짜 체크를 먼저 수행
   const isNewDay = (() => {
     const savedDate = localStorage.getItem('lupin_date');
@@ -18,7 +18,8 @@ export const useLupin = (sps: number) => {
   const [isLupinMode, setIsLupinMode] = useState(() => {
     if (isNewDay) return false;
     const saved = localStorage.getItem('lupin_mode');
-    return saved === 'true';
+    // 출근하지 않으면 루팡 모드 자동 해제
+    return saved === 'true' && isWorking;
   });
 
   const [lupinEarned, setLupinEarned] = useState(() => {
@@ -47,7 +48,15 @@ export const useLupin = (sps: number) => {
     localStorage.setItem('lupin_date', new Date().toDateString());
   }, [lupinEarned, lupinSeconds]);
 
-  // 루팡 모드일 때 돈 적립
+  // 출근하지 않으면 루팡 모드 자동 해제
+  useEffect(() => {
+    if (!isWorking && isLupinMode) {
+      setIsLupinMode(false);
+      localStorage.setItem('lupin_mode', 'false');
+    }
+  }, [isWorking, isLupinMode]);
+
+  // 루팡 모드일 때 돈 적립 (출근 중일 때만)
   useEffect(() => {
     let animationFrameId: number;
 
@@ -56,7 +65,8 @@ export const useLupin = (sps: number) => {
       const delta = (now - lastTickRef.current) / 1000;
       lastTickRef.current = now;
 
-      if (isLupinMode) {
+      // 출근 중이고 루팡 모드일 때만 적립
+      if (isLupinMode && isWorking) {
         setLupinEarned((prev) => prev + sps * delta);
         setLupinSeconds((prev) => prev + delta);
       }
@@ -68,16 +78,21 @@ export const useLupin = (sps: number) => {
     animationFrameId = requestAnimationFrame(tick);
 
     return () => cancelAnimationFrame(animationFrameId);
-  }, [sps, isLupinMode]);
+  }, [sps, isLupinMode, isWorking]);
 
   const toggleLupin = useCallback(() => {
+    // 출근 중일 때만 토글 가능
+    if (!isWorking) {
+      return;
+    }
+    
     setIsLupinMode((prev) => {
       const newValue = !prev;
       // 즉시 localStorage에 저장 (비동기 업데이트 전에)
       localStorage.setItem('lupin_mode', newValue.toString());
       return newValue;
     });
-  }, []);
+  }, [isWorking]);
 
   return {
     isLupinMode,

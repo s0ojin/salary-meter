@@ -27,7 +27,7 @@ function App() {
     reset: resetPomodoro,
     clearSessionEarned: clearPomodoroSession,
   } = usePomodoro(25, sps);
-  const { isLupinMode, lupinEarned, lupinSeconds, toggleLupin } = useLupin(sps);
+  const { isLupinMode, lupinEarned, lupinSeconds, toggleLupin } = useLupin(sps, isWorking);
   const { earned, setEarned } = useMoneyAccumulator(sps, isWorking, workStartTime, todayWorkSeconds);
   const { records, saveRecord, getMonthTotal } = useDailyRecord();
 
