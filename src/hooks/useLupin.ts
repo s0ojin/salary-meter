@@ -35,13 +35,17 @@ export const useLupin = (sps: number) => {
 
   const lastTickRef = useRef<number>(Date.now());
 
-  // 로컬 스토리지 저장
+  // 루팡 모드 상태만 별도로 저장 (즉시 반영)
+  useEffect(() => {
+    localStorage.setItem('lupin_mode', isLupinMode.toString());
+  }, [isLupinMode]);
+
+  // 수익과 시간 저장
   useEffect(() => {
     localStorage.setItem('lupin_earned', lupinEarned.toString());
     localStorage.setItem('lupin_seconds', lupinSeconds.toString());
     localStorage.setItem('lupin_date', new Date().toDateString());
-    localStorage.setItem('lupin_mode', isLupinMode.toString());
-  }, [lupinEarned, lupinSeconds, isLupinMode]);
+  }, [lupinEarned, lupinSeconds]);
 
   // 루팡 모드일 때 돈 적립
   useEffect(() => {
@@ -67,7 +71,12 @@ export const useLupin = (sps: number) => {
   }, [sps, isLupinMode]);
 
   const toggleLupin = useCallback(() => {
-    setIsLupinMode((prev) => !prev);
+    setIsLupinMode((prev) => {
+      const newValue = !prev;
+      // 즉시 localStorage에 저장 (비동기 업데이트 전에)
+      localStorage.setItem('lupin_mode', newValue.toString());
+      return newValue;
+    });
   }, []);
 
   return {
