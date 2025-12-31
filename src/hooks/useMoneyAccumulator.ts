@@ -27,6 +27,8 @@ export const useMoneyAccumulator = (
       return;
     }
 
+    let animationFrameId: number;
+
     const updateEarned = () => {
       // 출근 전 수익 (이미 일한 시간에 대한 수익)
       const preWorkEarned = todayWorkSeconds * sps;
@@ -38,15 +40,18 @@ export const useMoneyAccumulator = (
       // 총 수익
       const totalEarned = preWorkEarned + currentSessionEarned;
       setEarned(totalEarned);
+
+      animationFrameId = requestAnimationFrame(updateEarned);
     };
 
     // 즉시 한 번 계산 (새로고침 후 보정)
     updateEarned();
 
-    // 100ms마다 업데이트 (부드러운 표시)
-    const intervalId = window.setInterval(updateEarned, 100);
-
-    return () => clearInterval(intervalId);
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
   }, [sps, isWorking, workStartTime, todayWorkSeconds]);
 
   // localStorage에 저장

@@ -58,6 +58,10 @@ export const useLupin = (sps: number, isWorking: boolean) => {
 
   // 루팡 모드일 때 돈 적립 (출근 중일 때만)
   useEffect(() => {
+    if (!isLupinMode || !isWorking) {
+      return;
+    }
+
     let animationFrameId: number;
 
     const tick = () => {
@@ -66,10 +70,8 @@ export const useLupin = (sps: number, isWorking: boolean) => {
       lastTickRef.current = now;
 
       // 출근 중이고 루팡 모드일 때만 적립
-      if (isLupinMode && isWorking) {
-        setLupinEarned((prev) => prev + sps * delta);
-        setLupinSeconds((prev) => prev + delta);
-      }
+      setLupinEarned((prev) => prev + sps * delta);
+      setLupinSeconds((prev) => prev + delta);
 
       animationFrameId = requestAnimationFrame(tick);
     };
@@ -77,7 +79,11 @@ export const useLupin = (sps: number, isWorking: boolean) => {
     lastTickRef.current = Date.now();
     animationFrameId = requestAnimationFrame(tick);
 
-    return () => cancelAnimationFrame(animationFrameId);
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
   }, [sps, isLupinMode, isWorking]);
 
   const toggleLupin = useCallback(() => {
